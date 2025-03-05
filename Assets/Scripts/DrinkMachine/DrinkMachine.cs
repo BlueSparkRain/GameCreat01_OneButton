@@ -4,6 +4,19 @@ using UnityEngine;
 //饮料机
 public class DrinkMachine : MonoBehaviour
 {
+    static readonly string PathDir = "Prefab/Drink/";
+    static readonly string mineralWater = "农夫山泉";
+    static readonly string soadWater = "苏打水";
+    static readonly string sparklingWater = "气泡水";
+    static readonly string redBull = "红牛";
+    static readonly string WaterBathC = "水溶C";
+    static readonly string screamSportsDrink = "尖叫运动饮料";
+    static readonly string capsicol = "辣椒油";
+    static readonly string windOil = "风油精";
+
+
+    List<string> drinksPath = new List<string>() {mineralWater,soadWater,sparklingWater,redBull,WaterBathC,screamSportsDrink,capsicol,windOil };
+
     [Header("饮料出生点")]
     public Transform drinkBornPos;
     [Header("饮料移动终点")]
@@ -37,7 +50,7 @@ public class DrinkMachine : MonoBehaviour
     /// </summary>
     public void AddNewDrink()
     {
-        Debug.Log("新增一瓶饮料");
+        //Debug.Log("新增一瓶饮料");
         GameObject newDrinkObj = Instantiate(RandomDrink());
         drinks.Add(newDrinkObj.GetComponent<Drinkable>());
         newDrinkObj.transform.position = drinkBornPos.position + Vector3.up * 2;
@@ -64,9 +77,9 @@ public class DrinkMachine : MonoBehaviour
     /// </summary>
     void HitDrinkMove()
     {
-        Debug.Log("饮料机被敲击了");
+        //Debug.Log("饮料机被敲击了");
 
-        if (nextDrink != null && nextDrink.currentHitTime >= nextDrink.HitTime)
+        if (nextDrink && nextDrink.currentHitTime >= nextDrink.HitTime)
         {
             if (!nextDrink.hasFall)
                 nextDrink.DrinkFall(GameLogic.Instance.currentPlayerIndex);
@@ -74,13 +87,15 @@ public class DrinkMachine : MonoBehaviour
                 AddNewDrink();
             return;
         }
-        if (nextDrink != null&&!nextDrink.hasFall)
+        if (nextDrink &&!nextDrink.hasFall)
         {
             StartCoroutine(LerpHelper.MakeLerp(nextDrink.transform.position,
                 Vector3.Lerp(drinkBornPos.position, drinkEndPos.position,
                (float)(nextDrink.currentHitTime / (float)nextDrink.minHitTime)), drinkMoveDuration,
-                (val) => nextDrink.transform.position = val));
+               (val) => nextDrink.transform.position = val));
         }
+        if(nextDrink&& GameLogic.Instance.currentPlayer)
+        nextDrink.HitMe(GameLogic.Instance.currentPlayer);
     }
 
 
@@ -90,23 +105,8 @@ public class DrinkMachine : MonoBehaviour
     /// <returns></returns>
     GameObject RandomDrink()
     {
-        int index = Random.Range(0, 6);
-        switch (index)
-        {
-            case 0:
-                return Resources.Load<GameObject>("Prefab/Drink/可乐");
-            case 1:
-                return Resources.Load<GameObject>("Prefab/Drink/气泡水");
-            case 2:
-                return Resources.Load<GameObject>("Prefab/Drink/苏打水");
-            case 3:
-                return Resources.Load<GameObject>("Prefab/Drink/红牛");
-            case 4:
-                return Resources.Load<GameObject>("Prefab/Drink/桃汁");
-            case 5:
-                return Resources.Load<GameObject>("Prefab/Drink/运动饮料");
-            default:
-                return Resources.Load<GameObject>("Prefab/Drink/苏打水");
-        }
+        int index = Random.Range(0, drinksPath.Count);
+        string path = PathDir + drinksPath[index];
+        return Resources.Load<GameObject>(path);
     }
 }

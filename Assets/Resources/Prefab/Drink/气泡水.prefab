@@ -104,7 +104,7 @@ MonoBehaviour:
   score: 150
   minHitTime: 7
   maxHitTime: 10
-  ThirstValue: 10
+  ThirstValue: 15
   StrengthValue: 5
   HitTime: 0
   currentHitTime: 1

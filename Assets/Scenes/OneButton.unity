@@ -1540,18 +1540,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStrength: 100
   currentStrength: 0
-  HitCost: 4
+  HitCost: 3
   strengthExpendValue: 1
   strengthExpendInterval: 0.5
   maxThristy: 100
   currentThristy: 0
   thirstyExpendValue: 3
   thirstyExpendInterval: 1
+  playerName: "\u5C0F\u9ED1"
   playerIndex: 1
   strengthBar: {fileID: 273582382}
   thirstBar: {fileID: 1960200304}
   currentScore: 0
   Play_ScoreText: {fileID: 174353312}
+  dyingDuration: 10
 --- !u!1 &929356979
 GameObject:
   m_ObjectHideFlags: 0
@@ -1669,6 +1671,9 @@ MonoBehaviour:
   randTimerText: {fileID: 1631754281}
   randPlayerText: {fileID: 1500841029}
   techPanle: {fileID: 374764273}
+  player1: {fileID: 1420236634}
+  player2: {fileID: 867635729}
+  currentPlayer: {fileID: 0}
 --- !u!4 &1033279727
 Transform:
   m_ObjectHideFlags: 0
@@ -1938,18 +1943,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxStrength: 100
   currentStrength: 0
-  HitCost: 4
+  HitCost: 3
   strengthExpendValue: 1
   strengthExpendInterval: 0.5
   maxThristy: 100
   currentThristy: 0
   thirstyExpendValue: 3
   thirstyExpendInterval: 1
+  playerName: "\u5C0F\u767D"
   playerIndex: 0
   strengthBar: {fileID: 1757862271}
   thirstBar: {fileID: 1047363299}
   currentScore: 0
   Play_ScoreText: {fileID: 1765440848}
+  dyingDuration: 10
 --- !u!1 &1427456005
 GameObject:
   m_ObjectHideFlags: 0
@@ -2232,8 +2239,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: A
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: af593e94875a19d409b6d1a0d9e13842, type: 2}
+  m_sharedMaterial: {fileID: -5971077015783153009, guid: af593e94875a19d409b6d1a0d9e13842, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

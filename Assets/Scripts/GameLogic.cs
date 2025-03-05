@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,6 +29,14 @@ public class GameLogic : MonoSingleton<GameLogic>
     [Header("教学面板")]
     public Transform techPanle;
 
+    [Header("玩家一")]
+    public Player player1;
+    [Header("玩家二")]
+    public Player player2;
+
+    [Header("当前玩家")]
+    public Player currentPlayer;
+
     int winnerIndex;
     string winnerName;
 
@@ -40,52 +49,42 @@ public class GameLogic : MonoSingleton<GameLogic>
     /// win为0表示本玩家失败，1表示本玩家获胜
     /// </summary>
     /// <param name="win"></param>
-    /// <param name="winner"></param>
-    public void GetWinner(int win, Player winner)
+    /// <param name="player"></param>
+    public void GetWinner(bool win, Player player)
     {
-        //播放胜利界面及动画
-        if (win == 0)
-        {
-            if (currentPlayerIndex == 0)
-                winnerIndex = 1;
-            else
-                winnerIndex = 0;
-        }
-        else if (win == 1) 
-        {
-            if (currentPlayerIndex == 0)
-                winnerIndex = 0;
-            else
-                winnerIndex = 1;
-        }
-        GameOver(winnerIndex);
-    }
-
-    void GameOver(int winnerIndex) 
-    {
-        
-        if(winnerIndex==0)
-        {
-            winnerName = "玩家一";
-        }
+        if (win) 
+            GameOver(player);
         else 
         {
-            winnerName = "玩家二"; 
+            if (player == player1) 
+                GameOver(player2);
+            else 
+                GameOver(player1);
         }
-        Debug.Log(winnerName+"获胜了");
-        //胜利界面和动画
     }
 
+    /// <summary>
+    /// 开启教学面板
+    /// </summary>
+    /// <returns></returns>
     IEnumerator TechPanelOpen() 
     {
         yield return new WaitForSeconds(0.4f);
+        Time.timeScale = 0;
         yield return UITween.Instance.UIDoFade(techPanle,0,1,0.3f);
         yield return UITween.Instance.UIDoMove(techPanle, new Vector2(0, 800), Vector2.zero, 0.3f);
+
     }
+
+    /// <summary>
+    /// 关闭教学面板
+    /// </summary>
+    /// <returns></returns>
     IEnumerator TechPanelClose() 
     {
         yield return UITween.Instance.UIDoFade(techPanle, 1, 0, 0.5f);        
         yield return UITween.Instance.UIDoMove(techPanle, Vector2.zero, new Vector2(0, 800), 0.5f);
+        Time.timeScale = 1;
     } 
 
     private void OnEnable()
@@ -109,7 +108,9 @@ public class GameLogic : MonoSingleton<GameLogic>
         //播放游戏开始音效
 
         Debug.Log("游戏开始");
-        randPlayerText.text = playerName;
+        //左方先手
+        currentPlayer = player1;
+        randPlayerText.text = currentPlayer.playerName;
     }
 
     private void Update()
@@ -127,7 +128,10 @@ public class GameLogic : MonoSingleton<GameLogic>
         {
             //玩家按下空格键,触发HitDrinkMachine事件
             if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if(!currentPlayer.InVertigoState)
                 EventCenter.Instance.EventTrigger(E_EventType.E_HitDrinkMachine);
+            }
 
             if (playerTurnTimer >= 0)
             {
@@ -142,6 +146,7 @@ public class GameLogic : MonoSingleton<GameLogic>
         }
     }
 
+
     /// <summary>
     /// 玩家回合切换
     /// </summary>
@@ -151,13 +156,18 @@ public class GameLogic : MonoSingleton<GameLogic>
         if (currentPlayerIndex + 1 >= playerNum)
         {
             currentPlayerIndex = 0;
-            playerName = "A";
+            currentPlayer = player1;
+            player1.InMyTurn(true);
+            player2.InMyTurn(false);
         }
         else
         {
             currentPlayerIndex++;
-            playerName = "B";
+            currentPlayer = player2;
+            player2.InMyTurn(true);
+            player1.InMyTurn(false);
         }
+        playerName = currentPlayer.playerName;
         randPlayerText.text = playerName;
     }
 
@@ -167,7 +177,7 @@ public class GameLogic : MonoSingleton<GameLogic>
     void GameOver(Player winner)
     {
         //弹出结束面板
-
-
+        UIManager.Instance.ShowPanel<GameOverPanel>(panel => { panel.GetWinner(winner);});
+        Time.timeScale = 0;
     }
 }

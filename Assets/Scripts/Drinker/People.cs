@@ -1,3 +1,5 @@
+using System.Collections;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class People : MonoBehaviour,ICanDrink
@@ -18,6 +20,20 @@ public class People : MonoBehaviour,ICanDrink
     [Header("体力自然消耗间隔")]
     public float strengthExpendInterval=1;
 
+    protected float defalutStrengthExpendInterval;
+
+    [Header("红温状态")]
+    public bool InAngryState { get;private set; }
+    [Header("兴奋状态")]
+    public bool InExcitedState {  get; private set; }
+
+    [Header("体征安全状态")]
+    public bool InSafeState {  get; private set; }
+
+    [Header("眩晕状态")]
+    public bool InVertigoState {  get; private set; }
+
+
     protected float thirstyTimer;
     #endregion
 
@@ -31,19 +47,17 @@ public class People : MonoBehaviour,ICanDrink
     [Header("口渴自然消耗间隔")]
     public float thirstyExpendInterval=1.5f;
 
+    public float defalutThirstyExpendInterval { get;private set; }
+
     protected float strengthTimer;
 
     #endregion
 
-    //private void OnEnable()
-    //{
-    //   EventCenter.Instance.AddEventListener(E_EventType.E_HitDrinkMachine,HitDrinkShop);
-    //}
+    protected bool inMyTurn;
 
-    //private void OnDisable()
-    //{
-    //   EventCenter.Instance.AddEventListener(E_EventType.E_HitDrinkMachine,HitDrinkShop);  
-    //}
+    [Header("玩家名称")]
+    public string playerName;
+
 
     protected virtual void Start() 
     {
@@ -52,32 +66,48 @@ public class People : MonoBehaviour,ICanDrink
 
        strengthTimer=strengthExpendInterval;
        thirstyTimer=thirstyExpendInterval;
-    }
 
+        defalutStrengthExpendInterval = strengthExpendInterval;
+        defalutThirstyExpendInterval = thirstyExpendInterval;
+    }
     /// <summary>
     /// 玩家击打饮料机
     /// </summary>
     /// <param name="drink"></param>
     protected virtual void HitDrinkShop() 
     {
-    
-        Debug.Log("玩家击打饮料机");
-        //currentStrength-=strengthExpendValue;
-        currentStrength-=HitCost;
+        //Debug.Log("玩家击打饮料机");
+        if (!InExcitedState)
+        {
+            if(!InSafeState)
+            currentStrength -= HitCost;
+            else 
+            {
+               if(currentStrength-HitCost <= 20)
+                       currentStrength = 20;
+               else
+                  currentStrength -= HitCost;
+            }
+        }
+        else
+            currentStrength += (HitCost / 2);
         //播放击打音效
     }
     public virtual void DrinkIt(IDrink targetDrink)
     {
-        Debug.Log("玩家喝到饮料");
+        //Debug.Log("玩家喝到饮料");
         drink = targetDrink;
         drink.DrinkMe(this);
     }
 
     /// <summary>
-    /// 体力自然消耗
+    /// 体力自然恢复
     /// </summary>
     protected virtual  void StrengthExpendUpdate() 
     {
+        if(inMyTurn)
+            return;
+
         if (currentStrength >= 0) 
         {
             if (strengthTimer >= 0)
@@ -107,4 +137,60 @@ public class People : MonoBehaviour,ICanDrink
         }
 
     }
+
+    /// <summary>
+    /// 进入愤怒状态
+    /// </summary>
+    /// <param name="angry"></param>
+    public void TurnAngryState(bool angry)
+    {
+        if (angry)
+            InAngryState = true;
+        else
+            InAngryState = false;
+    }
+
+    /// <summary>
+    /// 进入亢奋状态
+    /// </summary>
+    /// <param name="excited"></param>
+    public void TurnExcitedState(bool excited)
+    {
+        if (excited)
+            InExcitedState = true;
+        else
+            InExcitedState = false;
+    }
+
+    /// <summary>
+    /// 当喝下水溶C，判断是否恢复到20
+    /// </summary>
+    public void TurnSafeState(bool safe, float limitStrength)
+    {
+        if (currentStrength <= limitStrength)
+            currentStrength = limitStrength;
+
+        if (safe)
+            InSafeState = true;
+        else 
+            InSafeState = false;
+    }
+
+    /// <summary>
+    ///进入眩晕状态
+    /// </summary>
+    public void TurnVertigoState(bool vertigo) 
+    {
+        if (vertigo)
+        {
+            GetComponent<SpriteRenderer>().color = Color.yellow;
+            InVertigoState = true;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+            InVertigoState = false;
+        }
+    }
+
 }
