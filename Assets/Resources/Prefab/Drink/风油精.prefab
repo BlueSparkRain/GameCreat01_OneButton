@@ -110,7 +110,7 @@ MonoBehaviour:
   HitTime: 0
   currentHitTime: 1
   hasFall: 0
-  effectDuration: 5
+  effectDuration: 10
 --- !u!50 &2347219291012748976
 Rigidbody2D:
   serializedVersion: 4
