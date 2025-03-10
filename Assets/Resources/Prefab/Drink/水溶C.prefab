@@ -109,8 +109,8 @@ MonoBehaviour:
   HitTime: 0
   currentHitTime: 1
   hasFall: 0
-  effectDuration: 20
-  limitMinStrength: 20
+  effectDuration: 15
+  limitMinStrength: 50
 --- !u!50 &6226453260667839442
 Rigidbody2D:
   serializedVersion: 4
