@@ -105,10 +105,11 @@ MonoBehaviour:
   minHitTime: 7
   maxHitTime: 11
   ThirstValue: 20
-  StrengthValue: 5
+  StrengthValue: 0
   HitTime: 0
   currentHitTime: 1
   hasFall: 0
+  effectDuration: 5
 --- !u!50 &5812047357289394993
 Rigidbody2D:
   serializedVersion: 4

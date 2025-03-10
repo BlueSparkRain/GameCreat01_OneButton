@@ -102,10 +102,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 100
-  minHitTime: 7
-  maxHitTime: 10
-  ThirstValue: 15
-  StrengthValue: 5
+  minHitTime: 5
+  maxHitTime: 7
+  ThirstValue: 25
+  StrengthValue: 0
   HitTime: 0
   currentHitTime: 1
   hasFall: 0

@@ -103,8 +103,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 100
-  minHitTime: 7
-  maxHitTime: 11
+  minHitTime: 11
+  maxHitTime: 15
   ThirstValue: -20
   StrengthValue: 10
   HitTime: 0
