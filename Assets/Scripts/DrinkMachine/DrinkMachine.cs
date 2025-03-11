@@ -96,6 +96,16 @@ public class DrinkMachine : MonoBehaviour
         }
         if(nextDrink&& GameLogic.Instance.currentPlayer)
         nextDrink.HitMe(GameLogic.Instance.currentPlayer);
+        
+        Animator animator = GetComponent<Animator>();
+        if (animator && GameLogic.Instance.currentPlayerIndex == 0)
+        {
+            animator.SetTrigger("Hit1");
+        }
+        if (animator && GameLogic.Instance.currentPlayerIndex == 1)
+        {
+            animator.SetTrigger("Hit2");
+        }
     }
 
 

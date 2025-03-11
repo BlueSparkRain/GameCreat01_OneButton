@@ -82,9 +82,26 @@ public abstract class Drinkable : MonoBehaviour, IDrink,IHaveEffect
         //Debug.Log("饮料坠落！");
         rb.bodyType = RigidbodyType2D.Dynamic;
         if (playerIndex == 1)
+        {
+            transform.position = new Vector3(0f, -2.5f, -3f);
+            BoxCollider2D collider = GetComponent<BoxCollider2D>();
+            if (collider != null)
+            {
+                collider.enabled = false;
+            }
             rb.velocity = new Vector2(Random.Range(0.5f, 1.0f), Random.Range(0.3f, 1.0f)).normalized * 20;
+        }
+            
         else if (playerIndex == 0)
+        {
+            transform.position = new Vector3(0f, -2.5f, -3f);
+            BoxCollider2D collider = GetComponent<BoxCollider2D>();
+            if (collider != null)
+            {
+                collider.enabled = false;
+            }
             rb.velocity = new Vector2(Random.Range(-1.5f, -1.0f), Random.Range(1.0f, 1.5f)).normalized * 25;
+        }
 
         hasFall = true;
         rb.angularVelocity = 1000;
@@ -111,6 +128,7 @@ public abstract class Drinkable : MonoBehaviour, IDrink,IHaveEffect
             currentHitTime += 2;
 
         }
+        rb.velocity = new Vector2(Random.Range(-0.1f, 0.3f), Random.Range(0.2f, 0.4f)).normalized * 25;
         //播放饮料晃动音效
     }
 

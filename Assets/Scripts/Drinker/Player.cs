@@ -18,6 +18,12 @@ public class Player : People
     [Header("玩家得分Text")]
     public TMP_Text Play_ScoreText;
 
+    [Header("口渴条数值Text")]
+    public TMP_Text thirstBarText;
+
+    [Header("体力条数值Text")]
+    public TMP_Text strengthText;
+
     private Coroutine dyingCor;
     [Header("濒死时间")]
     public float dyingDuration=10;
@@ -112,7 +118,17 @@ public class Player : People
         {
             base.HitDrinkShop();
             strengthBar.fillAmount = currentStrength/maxStrength;
+            strengthText.text=currentStrength.ToString();
         }//体力条更新
+        Animator animator = GetComponentInChildren<Animator>();
+        if (animator&&GameLogic.Instance.currentPlayerIndex==0)
+        {
+            animator.SetTrigger("Hit0");
+        }
+        if (animator && GameLogic.Instance.currentPlayerIndex == 1)
+        {
+            animator.SetTrigger("Hit1");
+        }
     }
 
     protected override void StrengthExpendUpdate()
@@ -127,6 +143,7 @@ public class Player : People
         base.ThirstExpendUpdate();
         //口渴条更新
         thirstBar.fillAmount=currentThristy/maxThristy;
+        thirstBarText.text=currentThristy.ToString();
     }
 
   
