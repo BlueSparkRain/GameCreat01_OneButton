@@ -78,6 +78,23 @@ public class DrinkMachine : MonoBehaviour
     void HitDrinkMove()
     {
         //Debug.Log("饮料机被敲击了");
+        int random = Random.Range(1, 5);
+        Transform child = transform.Find("open");
+        if (nextDrink && nextDrink.HitTime- nextDrink.currentHitTime<=random)
+        {
+            if (child != null)
+            {
+                child.gameObject.SetActive(true);
+            }
+            
+        }
+        else
+        {
+            if (child != null)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
 
         if (nextDrink && nextDrink.currentHitTime >= nextDrink.HitTime)
         {
