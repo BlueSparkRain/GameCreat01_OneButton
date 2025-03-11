@@ -184,10 +184,21 @@ public class People : MonoBehaviour,ICanDrink
         if (vertigo)
         {
             GetComponent<SpriteRenderer>().color = Color.yellow;
+            Transform child = transform.Find("dizzy");
+            if (child != null)
+            {
+                child.gameObject.SetActive(true);
+            }
+
             InVertigoState = true;
         }
         else
         {
+            Transform child = transform.Find("dizzy");
+            if (child != null)
+            {
+                child.gameObject.SetActive(true);
+            }
             GetComponent<SpriteRenderer>().color = Color.white;
             InVertigoState = false;
         }
