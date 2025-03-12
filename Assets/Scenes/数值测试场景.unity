@@ -669,17 +669,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &273582382 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5650518780642973679, guid: b0eb6a7eed319db4e859042f3c46f53e, type: 3}
-  m_PrefabInstance: {fileID: 465622890}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &312645673
 GameObject:
   m_ObjectHideFlags: 0
@@ -1547,12 +1536,14 @@ MonoBehaviour:
   currentThristy: 0
   thirstyExpendValue: 2.5
   thirstyExpendInterval: 1
-  playerName: "\u5C0F\u9ED1"
-  playerIndex: 1
-  strengthBar: {fileID: 273582382}
-  thirstBar: {fileID: 1960200304}
+  playerName: "\u5C0F\u767D"
+  playerIndex: 0
+  strengthBar: {fileID: 0}
+  thirstBar: {fileID: 0}
   currentScore: 0
-  Play_ScoreText: {fileID: 174353312}
+  Play_ScoreText: {fileID: 0}
+  thirstBarText: {fileID: 0}
+  strengthText: {fileID: 0}
   dyingDuration: 10
 --- !u!1 &929356979
 GameObject:
@@ -1663,11 +1654,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a5c3bf7c88445f4c817f8b8f178112f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameBegin: 0
   RandDuration: 6
   playerNum: 2
   currentPlayerIndex: 0
   playerName: A
-  gameOver: 1
   randTimerText: {fileID: 1631754281}
   randPlayerText: {fileID: 1500841029}
   techPanle: {fileID: 374764273}
@@ -1956,6 +1947,8 @@ MonoBehaviour:
   thirstBar: {fileID: 1047363299}
   currentScore: 0
   Play_ScoreText: {fileID: 1765440848}
+  thirstBarText: {fileID: 0}
+  strengthText: {fileID: 0}
   dyingDuration: 10
 --- !u!1 &1427456005
 GameObject:
@@ -2239,8 +2232,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: A
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: af593e94875a19d409b6d1a0d9e13842, type: 2}
-  m_sharedMaterial: {fileID: -5971077015783153009, guid: af593e94875a19d409b6d1a0d9e13842, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2466,12 +2459,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &1596655736
 GameObject:
   m_ObjectHideFlags: 0
@@ -3385,17 +3378,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1960200304 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5650518780642973679, guid: b0eb6a7eed319db4e859042f3c46f53e, type: 3}
-  m_PrefabInstance: {fileID: 1700707812}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2019928607
 GameObject:
   m_ObjectHideFlags: 0

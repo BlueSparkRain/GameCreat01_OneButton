@@ -8,6 +8,7 @@ public class WindOil : Drinkable
     public override void DrinkMe(People people)
     {
         base.DrinkMe(people);
+        MusicManager.Instance.PlaySound("获得辣椒油或风油精");
         Debug.Log("风油精效果开启");
     }
 

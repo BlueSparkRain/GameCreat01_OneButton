@@ -6,6 +6,7 @@ public class SparklingWater : Drinkable
     public override void DrinkMe(People people)
     {
         base.DrinkMe(people);
+        MusicManager.Instance.PlaySound("获得饮料时触发");
         Debug.Log("气泡水效果开启");
     }
 

@@ -1,6 +1,5 @@
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +12,7 @@ public class Player : People
     public Image thirstBar;
 
     [Header("当前得分")]
-    public int currentScore=0;
+    public int currentScore = 0;
 
     [Header("玩家得分Text")]
     public TMP_Text Play_ScoreText;
@@ -26,12 +25,15 @@ public class Player : People
 
     private Coroutine dyingCor;
     [Header("濒死时间")]
-    public float dyingDuration=10;
+    public float dyingDuration = 10;
+
+    public TMP_Text AddC_StrengthText;
+    public TMP_Text AddC_ThristyText;
 
 
     private void OnEnable()
     {
-        EventCenter.Instance.AddEventListener(E_EventType.E_HitDrinkMachine,HitDrinkShop);
+        EventCenter.Instance.AddEventListener(E_EventType.E_HitDrinkMachine, HitDrinkShop);
     }
     private void OnDisable()
     {
@@ -44,9 +46,9 @@ public class Player : People
             PlayerWin();
     }
 
-    void DyingCheck() 
-    { 
-        if(currentThristy<=0)
+    void DyingCheck()
+    {
+        if (currentThristy <= 0)
             PlayerThirstyDying();
 
         if (currentStrength <= 0)
@@ -56,7 +58,7 @@ public class Player : People
     /// <summary>
     /// 如果玩家在濒死倒计时内口渴值重新高于20。则停止濒死协程
     /// </summary>
-    void BackToLiveCheck() 
+    void BackToLiveCheck()
     {
         if (dyingCor != null && currentThristy >= 10)
         {
@@ -68,7 +70,7 @@ public class Player : People
     /// <summary>
     /// 自身回合内玩家将不会自动回复体力值
     /// </summary>
-    public void InMyTurn(bool outRand) 
+    public void InMyTurn(bool outRand)
     {
         if (outRand)
             inMyTurn = true;
@@ -76,11 +78,14 @@ public class Player : People
             inMyTurn = false;
     }
 
-  
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<Drinkable>())
+        {
+            Debug.Log("666");
             IGetDrink(other.gameObject.GetComponent<Drinkable>());
+        }
     }
 
     /// <summary>
@@ -88,9 +93,9 @@ public class Player : People
     /// </summary>
     public void PlayerWin()
     {
-        GameLogic.Instance.GetWinner(true,this);
+        GameLogic.Instance.GetWinner(true, this);
     }
-    public void PlayerLost() 
+    public void PlayerLost()
     {
         GameLogic.Instance.GetWinner(false, this);
     }
@@ -104,7 +109,7 @@ public class Player : People
         GetComponent<SpriteRenderer>().color = Color.red;
     }
 
-    IEnumerator ThirstyDying() 
+    IEnumerator ThirstyDying()
     {
         Debug.Log("进入濒死状态");
         //播放濒死动画或提示
@@ -117,11 +122,11 @@ public class Player : People
         if (GameLogic.Instance.currentPlayerIndex == playerIndex)
         {
             base.HitDrinkShop();
-            strengthBar.fillAmount = currentStrength/maxStrength;
-            strengthText.text=currentStrength.ToString();
+            strengthBar.fillAmount = currentStrength / maxStrength;
+            strengthText.text = ((int)currentStrength).ToString();
         }//体力条更新
         Animator animator = GetComponentInChildren<Animator>();
-        if (animator&&GameLogic.Instance.currentPlayerIndex==0)
+        if (animator && GameLogic.Instance.currentPlayerIndex == 0)
         {
             animator.SetTrigger("Hit0");
         }
@@ -135,26 +140,26 @@ public class Player : People
     {
         base.StrengthExpendUpdate();
         //体力条更新
-        strengthBar.fillAmount = currentStrength/maxStrength;
+        strengthBar.fillAmount = currentStrength / maxStrength;
     }
 
     protected override void ThirstExpendUpdate()
     {
         base.ThirstExpendUpdate();
         //口渴条更新
-        thirstBar.fillAmount=currentThristy/maxThristy;
-        thirstBarText.text=currentThristy.ToString();
+        thirstBar.fillAmount = currentThristy / maxThristy;
+        thirstBarText.text = ((int)currentThristy).ToString();
     }
 
-  
+
     /// <summary>
     /// 玩家获得分数
     /// </summary>
     /// <param name="score"></param>
-    void IGetScore(int score) 
+    void IGetScore(int score)
     {
         currentScore += score;
-        Play_ScoreText.text = currentScore.ToString();
+        Play_ScoreText.text = ((int)currentScore).ToString();
     }
 
     private void Update()
@@ -169,10 +174,20 @@ public class Player : People
         BackToLiveCheck();
     }
 
-    public  void IGetDrink(Drinkable drink) 
+    public void IGetDrink(Drinkable drink)
     {
         IGetScore(drink.score);
         DrinkIt(drink);
         //喝饮料音效
+        AddC_StrengthText.text = "体力值+" + drink.StrengthValue;
+        AddC_ThristyText.text = "水分值+" + drink.ThirstValue;
+        StartCoroutine(ShowDrink());
+    }
+
+    IEnumerator ShowDrink()
+    {
+        yield return new WaitForSeconds(0.8f);
+        AddC_StrengthText.text = null;
+        AddC_ThristyText.text = null;
     }
 }

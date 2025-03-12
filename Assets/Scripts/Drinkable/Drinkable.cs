@@ -14,7 +14,7 @@ public abstract class Drinkable : MonoBehaviour, IDrink,IHaveEffect
     public float ThirstValue;
     [Header("可恢复体力值")]
     public float StrengthValue;
-    [Header("真实需敲击次数")]
+    [Header("真实需敲击次数")]                     
     public int HitTime;
     [Header("当前敲击次数")]
     public int currentHitTime = 1;
@@ -22,11 +22,8 @@ public abstract class Drinkable : MonoBehaviour, IDrink,IHaveEffect
     Rigidbody2D rb;
     public bool hasFall = false;
 
-    BoxCollider2D col;
-
     [Header("Buff持续时间")]
     public float effectDuration = 5;
-
 
     protected virtual IEnumerator DrinkOver(People people) 
     {
@@ -39,13 +36,14 @@ public abstract class Drinkable : MonoBehaviour, IDrink,IHaveEffect
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        if (!other.gameObject.GetComponent<Player>())
+            if (!other.gameObject.GetComponent<Player>())
             EventCenter.Instance.EventTrigger(E_EventType.E_NewDrink, this);
     }
-    private void OnCollisionExit2D(Collision2D other)
+    protected  virtual void OnCollisionExit2D(Collision2D other)
     {
+
         if (!other.gameObject.GetComponent<Player>())
             EventCenter.Instance.EventTrigger(E_EventType.E_LastDrink, this);
     }
@@ -84,22 +82,18 @@ public abstract class Drinkable : MonoBehaviour, IDrink,IHaveEffect
         if (playerIndex == 1)
         {
             transform.position = new Vector3(0f, -2.5f, -3f);
-            BoxCollider2D collider = GetComponent<BoxCollider2D>();
-            if (collider != null)
-            {
-                collider.enabled = false;
-            }
+          
+            GetComponent<BoxCollider2D>().excludeLayers = LayerMask.GetMask("Shelf");
+            Debug.Log("出Shelf");
             rb.velocity = new Vector2(Random.Range(0.5f, 1.0f), Random.Range(0.3f, 1.0f)).normalized * 20;
         }
             
         else if (playerIndex == 0)
         {
             transform.position = new Vector3(0f, -2.5f, -3f);
-            BoxCollider2D collider = GetComponent<BoxCollider2D>();
-            if (collider != null)
-            {
-                collider.enabled = false;
-            }
+           
+            Debug.Log("出Shelf");
+            GetComponent<BoxCollider2D>().excludeLayers = LayerMask.GetMask("Shelf");
             rb.velocity = new Vector2(Random.Range(-1.5f, -1.0f), Random.Range(1.0f, 1.5f)).normalized * 25;
         }
 
@@ -126,7 +120,6 @@ public abstract class Drinkable : MonoBehaviour, IDrink,IHaveEffect
         {
             Debug.Log(player.playerName+"玩家发怒了");
             currentHitTime += 2;
-
         }
         rb.velocity = new Vector2(Random.Range(-0.1f, 0.3f), Random.Range(0.2f, 0.4f)).normalized * 25;
         //播放饮料晃动音效

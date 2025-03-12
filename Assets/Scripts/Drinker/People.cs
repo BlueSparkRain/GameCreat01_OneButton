@@ -1,37 +1,35 @@
-using System.Collections;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
-public class People : MonoBehaviour,ICanDrink
+public class People : MonoBehaviour, ICanDrink
 {
     public IDrink drink;
 
     #region 体力字段
     [Header("最大体力值")]
-    public float maxStrength=100;
+    public float maxStrength = 100;
     [Header("当前体力值")]
     public float currentStrength;
 
     [Header("单次敲击消耗体力值")]
-    public float HitCost=5;
+    public float HitCost = 5;
 
     [Header("体力单位自然消耗值")]
-    public float strengthExpendValue=1/3;
+    public float strengthExpendValue = 1 / 3;
     [Header("体力自然消耗间隔")]
-    public float strengthExpendInterval=1;
+    public float strengthExpendInterval = 1;
 
     protected float defalutStrengthExpendInterval;
 
     [Header("红温状态")]
-    public bool InAngryState { get;private set; }
+    public bool InAngryState { get; private set; }
     [Header("兴奋状态")]
-    public bool InExcitedState {  get; private set; }
+    public bool InExcitedState { get; private set; }
 
     [Header("体征安全状态")]
-    public bool InSafeState {  get; private set; }
+    public bool InSafeState { get; private set; }
 
     [Header("眩晕状态")]
-    public bool InVertigoState {  get; private set; }
+    public bool InVertigoState { get; private set; }
 
 
     protected float thirstyTimer;
@@ -39,15 +37,15 @@ public class People : MonoBehaviour,ICanDrink
 
     #region 口渴字段
     [Header("最大口渴值")]
-    public float maxThristy=100;
+    public float maxThristy = 100;
     [Header("当前口渴值")]
     public float currentThristy;
     [Header("口渴单位自然消耗值")]
-    public float thirstyExpendValue=5;
+    public float thirstyExpendValue = 5;
     [Header("口渴自然消耗间隔")]
-    public float thirstyExpendInterval=1.5f;
+    public float thirstyExpendInterval = 1.5f;
 
-    public float defalutThirstyExpendInterval { get;private set; }
+    public float defalutThirstyExpendInterval { get; private set; }
 
     protected float strengthTimer;
 
@@ -59,13 +57,13 @@ public class People : MonoBehaviour,ICanDrink
     public string playerName;
 
 
-    protected virtual void Start() 
+    protected virtual void Start()
     {
-       currentStrength=maxStrength;
-       currentThristy=maxThristy;
+        currentStrength = maxStrength;
+        currentThristy = maxThristy;
 
-       strengthTimer=strengthExpendInterval;
-       thirstyTimer=thirstyExpendInterval;
+        strengthTimer = strengthExpendInterval;
+        thirstyTimer = thirstyExpendInterval;
 
         defalutStrengthExpendInterval = strengthExpendInterval;
         defalutThirstyExpendInterval = thirstyExpendInterval;
@@ -74,19 +72,19 @@ public class People : MonoBehaviour,ICanDrink
     /// 玩家击打饮料机
     /// </summary>
     /// <param name="drink"></param>
-    protected virtual void HitDrinkShop() 
+    protected virtual void HitDrinkShop()
     {
         //Debug.Log("玩家击打饮料机");
         if (!InExcitedState)
         {
-            if(!InSafeState)
-            currentStrength -= HitCost;
-            else 
+            if (!InSafeState)
+                currentStrength -= HitCost;
+            else
             {
-               if(currentStrength-HitCost <= 20)
-                       currentStrength = 20;
-               else
-                  currentStrength -= HitCost;
+                if (currentStrength - HitCost <= 20)
+                    currentStrength = 20;
+                else
+                    currentStrength -= HitCost;
             }
         }
         else
@@ -103,12 +101,12 @@ public class People : MonoBehaviour,ICanDrink
     /// <summary>
     /// 体力自然恢复
     /// </summary>
-    protected virtual  void StrengthExpendUpdate() 
+    protected virtual void StrengthExpendUpdate()
     {
-        if(inMyTurn)
+        if (inMyTurn)
             return;
 
-        if (currentStrength >= 0) 
+        if (currentStrength >= 0)
         {
             if (strengthTimer >= 0)
                 strengthTimer -= Time.deltaTime;
@@ -123,15 +121,19 @@ public class People : MonoBehaviour,ICanDrink
     /// <summary>
     /// 口渴值自然消耗
     /// </summary>
-    protected virtual void ThirstExpendUpdate() 
+    protected virtual void ThirstExpendUpdate()
     {
         if (currentThristy >= 0)
         {
-            if (thirstyTimer>= 0)
+            if (thirstyTimer >= 0)
                 thirstyTimer -= Time.deltaTime;
             else
             {
-                currentThristy -= thirstyExpendValue;
+                if (currentThristy - thirstyExpendValue >= 0)
+                    currentThristy -= thirstyExpendValue;
+                else
+                    currentThristy = 0;
+
                 thirstyTimer = thirstyExpendInterval;
             }
         }
@@ -145,7 +147,10 @@ public class People : MonoBehaviour,ICanDrink
     public void TurnAngryState(bool angry)
     {
         if (angry)
+        {
+            MusicManager.Instance.PlaySound("角色脸变红或黄触发");
             InAngryState = true;
+        }
         else
             InAngryState = false;
     }
@@ -172,17 +177,18 @@ public class People : MonoBehaviour,ICanDrink
 
         if (safe)
             InSafeState = true;
-        else 
+        else
             InSafeState = false;
     }
 
     /// <summary>
     ///进入眩晕状态
     /// </summary>
-    public void TurnVertigoState(bool vertigo) 
+    public void TurnVertigoState(bool vertigo)
     {
         if (vertigo)
         {
+            MusicManager.Instance.PlaySound("角色脸变红或黄触发");
             GetComponent<SpriteRenderer>().color = Color.yellow;
             Transform child = transform.Find("dizzy");
             if (child != null)
@@ -197,7 +203,7 @@ public class People : MonoBehaviour,ICanDrink
             Transform child = transform.Find("dizzy");
             if (child != null)
             {
-                child.gameObject.SetActive(true);
+                child.gameObject.SetActive(false);
             }
             GetComponent<SpriteRenderer>().color = Color.white;
             InVertigoState = false;

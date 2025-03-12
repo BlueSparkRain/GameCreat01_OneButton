@@ -1,12 +1,31 @@
-using System;
 using System.Collections;
 using TMPro;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class GameLogic : MonoSingleton<GameLogic>
+public class GameLogic : MonoBehaviour
 {
+    static private GameLogic instance;
+    bool gameHasOver;
+    public static GameLogic Instance
+    {
+        get
+        {
+            if (instance != null)
+                return instance;
+            else
+                instance = new GameLogic();
+            return instance;
+        }
+    }
+
+    public bool gameBegin;
+
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     [Header("个人回合时间")]
     public float RandDuration = 6;
     float playerTurnTimer;
@@ -19,7 +38,7 @@ public class GameLogic : MonoSingleton<GameLogic>
     [Header("先手回合玩家姓名")]
     public string playerName = "A";
 
-    public bool gameOver = true;
+    bool gameOver = true;
 
     [Header("回合倒计时Text")]
     public TMP_Text randTimerText;
@@ -40,6 +59,10 @@ public class GameLogic : MonoSingleton<GameLogic>
     int winnerIndex;
     string winnerName;
 
+    public Material matl;
+    public Material mat2;
+    public Material defaultMat;
+
     private void Start()
     {
         StartCoroutine(TechPanelOpen());
@@ -52,13 +75,16 @@ public class GameLogic : MonoSingleton<GameLogic>
     /// <param name="player"></param>
     public void GetWinner(bool win, Player player)
     {
-        if (win) 
+        if (gameHasOver)
+            return;
+        gameHasOver = true;
+        if (win)
             GameOver(player);
-        else 
+        else
         {
-            if (player == player1) 
+            if (player == player1)
                 GameOver(player2);
-            else 
+            else
                 GameOver(player1);
         }
     }
@@ -67,11 +93,12 @@ public class GameLogic : MonoSingleton<GameLogic>
     /// 开启教学面板
     /// </summary>
     /// <returns></returns>
-    IEnumerator TechPanelOpen() 
+    IEnumerator TechPanelOpen()
     {
+        DialogueManager.Instance.InitIndex();
         yield return new WaitForSeconds(0.4f);
         Time.timeScale = 0;
-        yield return UITween.Instance.UIDoFade(techPanle,0,1,0.3f);
+        yield return UITween.Instance.UIDoFade(techPanle, 0, 1, 0.3f);
         yield return UITween.Instance.UIDoMove(techPanle, new Vector2(0, 800), Vector2.zero, 0.3f);
 
     }
@@ -80,22 +107,25 @@ public class GameLogic : MonoSingleton<GameLogic>
     /// 关闭教学面板
     /// </summary>
     /// <returns></returns>
-    IEnumerator TechPanelClose() 
+    public IEnumerator TechPanelClose()
     {
-        yield return UITween.Instance.UIDoFade(techPanle, 1, 0, 0.5f);        
+        yield return UITween.Instance.UIDoFade(techPanle, 1, 0, 0.5f);
         yield return UITween.Instance.UIDoMove(techPanle, Vector2.zero, new Vector2(0, 800), 0.5f);
         Time.timeScale = 1;
-    } 
+        gameBegin = true;
+        ChangePlayerMat(matl);
+        ReSetPlayerMat(player2);
+    }
 
     private void OnEnable()
     {
         EventCenter.Instance.AddEventListener(E_EventType.E_GameBegin, GameBegin);
-        EventCenter.Instance.AddEventListener<Player>(E_EventType.E_GameOver, GameOver);
+        //EventCenter.Instance.AddEventListener<Player>(E_EventType.E_GameOver, GameOver);
     }
     private void OnDisable()
     {
         EventCenter.Instance.RemoveEventListener(E_EventType.E_GameBegin, GameBegin);
-        EventCenter.Instance.RemoveEventListener<Player>(E_EventType.E_GameOver, GameOver);
+        //EventCenter.Instance.RemoveEventListener<Player>(E_EventType.E_GameOver, GameOver);
     }
 
     /// <summary>
@@ -120,17 +150,23 @@ public class GameLogic : MonoSingleton<GameLogic>
             if (Input.GetKeyDown(KeyCode.Space))
             {//开启游戏
                 gameOver = false;
-                StartCoroutine(TechPanelClose());
+                //StartCoroutine(TechPanelClose());
                 EventCenter.Instance.EventTrigger(E_EventType.E_GameBegin);
             }
         }
-       else
+        else
         {
+            if (!gameBegin)
+                return;
+
             //玩家按下空格键,触发HitDrinkMachine事件
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if(!currentPlayer.InVertigoState)
-                EventCenter.Instance.EventTrigger(E_EventType.E_HitDrinkMachine);
+                if (!currentPlayer.InVertigoState)
+                {
+                    MusicManager.Instance.PlaySound("敲击音效按空格触发");
+                    EventCenter.Instance.EventTrigger(E_EventType.E_HitDrinkMachine);
+                }
             }
 
             if (playerTurnTimer >= 0)
@@ -157,6 +193,8 @@ public class GameLogic : MonoSingleton<GameLogic>
         {
             currentPlayerIndex = 0;
             currentPlayer = player1;
+            ChangePlayerMat(matl);
+            ReSetPlayerMat(player2);
             player1.InMyTurn(true);
             player2.InMyTurn(false);
         }
@@ -164,12 +202,41 @@ public class GameLogic : MonoSingleton<GameLogic>
         {
             currentPlayerIndex++;
             currentPlayer = player2;
+            ChangePlayerMat(mat2);
+            ReSetPlayerMat(player1);
             player2.InMyTurn(true);
             player1.InMyTurn(false);
         }
+
         playerName = currentPlayer.playerName;
         randPlayerText.text = playerName;
     }
+
+    SpriteRenderer GetTargetMat(Transform target)
+    {
+        return target?.GetComponent<SpriteRenderer>();
+    }
+
+    void ChangePlayerMat(Material mat)
+    {
+        Transform sp = currentPlayer.transform.GetChild(1);
+        GetTargetMat(sp.GetChild(0)).material = mat;
+        GetTargetMat(sp.GetChild(1)).material = mat;
+        GetTargetMat(sp.GetChild(2)).material = mat;
+        GetTargetMat(sp.GetChild(3)).material = mat;
+        GetTargetMat(sp.GetChild(4)).material = mat;
+    }
+
+    void ReSetPlayerMat(Player player) 
+    {
+        Transform sp = player.transform.GetChild(1);
+        GetTargetMat(sp.GetChild(0)).material = defaultMat;
+        GetTargetMat(sp.GetChild(1)).material = defaultMat;
+        GetTargetMat(sp.GetChild(2)).material = defaultMat;
+        GetTargetMat(sp.GetChild(3)).material = defaultMat;
+        GetTargetMat(sp.GetChild(4)).material = defaultMat;
+    }
+
 
     /// <summary>
     /// 游戏结束
@@ -177,7 +244,7 @@ public class GameLogic : MonoSingleton<GameLogic>
     void GameOver(Player winner)
     {
         //弹出结束面板
-        UIManager.Instance.ShowPanel<GameOverPanel>(panel => { panel.GetWinner(winner);});
+        UIManager.Instance.ShowPanel<GameOverPanel>(panel => { panel.GetWinner(winner); });
         Time.timeScale = 0;
     }
 }

@@ -12,6 +12,7 @@ public class RedBull :Drinkable
     {
         base.DrinkMe(people);
         Debug.Log("红牛效果开启");
+        MusicManager.Instance.PlaySound("获得饮料时触发");
     }
 
     public override void MyEffect(People people)

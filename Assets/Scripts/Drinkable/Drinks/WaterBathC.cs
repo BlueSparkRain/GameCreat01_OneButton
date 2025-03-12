@@ -9,6 +9,7 @@ public class WaterBathC : Drinkable
     public override void DrinkMe(People people)
     {
         base.DrinkMe(people);
+        MusicManager.Instance.PlaySound("获得饮料时触发");
         Debug.Log("水溶C效果开启");
     }
 
